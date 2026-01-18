@@ -18,15 +18,18 @@
   min-height: calc(100% - 8px);
 }
 
-
 .Message {
   width: 90%;
   padding: 0 16px;
   border-radius: 16px;
   font-size: 14px;
 
+  &[data-role="system"] {
+    background: light-dark(#f9dbdb, #6d3030);
+  }
+
   &[data-role="user"] {
     align-self: flex-end;
-    background: #f3f3f3;
+    background: light-dark(#f3f3f3, #303030);
   }
 }
