@@ -3,7 +3,7 @@ import Markdown from 'react-markdown';
 import styles from "./Chat.module.css";
 
 interface ChatMessage {
-    role: "user" | "assistant";
+    role: "user" | "assistant" | "system";
     content: string;
 };
 
