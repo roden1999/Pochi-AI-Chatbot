@@ -7,12 +7,12 @@ import { Control } from "./components/Controls/Controls";
 import { Loader } from './components/Loader/Loader';
 
 // change import to switch ai | googleai | openai | deepseekai
-import { Assistant } from './assistants/deepseekai';
+import { Assistant } from './assistants/openai';
 
 
 
 interface ChatMessage {
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "system";
   content: string;
 };
 
@@ -49,7 +49,10 @@ function App() {
       // const result = await assistant.chatStream(content);
 
       /*                OpenAI                     */
-      const result = await assistant.chatStream(content, messages);
+      const result = await assistant.chatStream(
+        content,
+        messages.filter(({ role }) => role !== "system") // comment this line when switching to genai
+      );
 
       var isFirstChunk = false;
       for await (const chunk of result) {
@@ -63,9 +66,14 @@ function App() {
         updateLastMessageContent(chunk);
       }
       setIsStreaming(false);
-    } catch (error) {
-      console.log(error);
-      addMessage({ role: "system", content: "Sorry, I couldn't process your request. Please try again." });
+    } catch (error: unknown) {
+      addMessage({
+        role: "system",
+        content:
+          error instanceof Error
+            ? error.message
+            : "Sorry, I couldn't process your request. Please try again!",
+      });
     } finally {
       setIsLoading(false);
       setIsStreaming(false);
