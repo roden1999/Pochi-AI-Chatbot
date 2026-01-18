@@ -6,9 +6,8 @@ import { Chat } from "./components/Chat/Chat";
 import { Control } from "./components/Controls/Controls";
 import { Loader } from './components/Loader/Loader';
 
-//ai
-// import { Assistant } from './assistants/googleai';
-import { Assistant } from './assistants/openai';
+// change import to switch ai | googleai | openai | deepseekai
+import { Assistant } from './assistants/deepseekai';
 
 
 
