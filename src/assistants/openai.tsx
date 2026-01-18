@@ -21,7 +21,7 @@ export class Assistant {
 
             return result.choices[0].message.content;
         } catch (error) {
-            throw error;
+            throw this.#parseError(error);
         }
     }
 
@@ -37,7 +37,11 @@ export class Assistant {
                 yield chunk.choices[0]?.delta?.content || "";
             }
         } catch (error) {
-            throw error;
+            throw this.#parseError(error);
         }
+    }
+
+    #parseError(error: any) {
+        return error;
     }
 }

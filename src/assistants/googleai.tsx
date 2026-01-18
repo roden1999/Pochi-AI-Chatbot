@@ -14,7 +14,7 @@ export class Assistant {
             const result = await this.#chat.sendMessage({ message: content });
             return result.text;
         } catch (error) {
-            throw error;
+            throw this.#parseError(error);
         }
     }
 
@@ -26,7 +26,39 @@ export class Assistant {
                 yield chunk.text;
             }
         } catch (error) {
-            throw error;
+            throw this.#parseError(error);
+        }
+    }
+
+    #parseError(error: any): Error {
+        try {
+            // STEP 1: error.message is a JSON STRING
+            if (typeof error?.message === "string") {
+                const outer = JSON.parse(error.message);
+
+                // STEP 2: outer.error.message is ALSO a JSON STRING
+                if (typeof outer?.error?.message === "string") {
+                    const inner = JSON.parse(outer.error.message);
+
+                    // STEP 3: inner.error.message is the real text
+                    if (typeof inner?.error?.message === "string") {
+                        return new Error(inner.error.message);
+                    }
+                }
+            }
+
+            // Fallbacks
+            if (error instanceof Error) {
+                return error;
+            }
+
+            return new Error("Unknown error occurred.");
+        } catch {
+            return new Error(
+                typeof error?.message === "string"
+                    ? error.message
+                    : "Unknown error occurred."
+            );
         }
     }
 
