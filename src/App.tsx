@@ -5,12 +5,7 @@ import styles from './App.module.css';
 import { Chat } from "./components/Chat/Chat";
 import { Control } from "./components/Controls/Controls";
 import { Loader } from './components/Loader/Loader';
-
-// change import to switch ai | googleai | openai | deepseekai
-import { Assistant } from './assistants/openai';
-
-
-
+import { Assistant } from './components/Assistant/Assistant';
 interface ChatMessage {
   role: "user" | "assistant" | "system";
   content: string;
@@ -19,12 +14,14 @@ interface ChatMessage {
 const MESSAGES: ChatMessage[] = [
   {
     role: "assistant",
-    content: "Hello! How can  I assist you right now?"
+    content: "Hello! I'm Pochi. How can  I assist you right now?"
   },
 ];
 
+let assistant: any;
+
 function App() {
-  const assistant = new Assistant();
+  // const assistant = new APIAssistant();
   const [messages, setMessages] = useState<ChatMessage[]>(MESSAGES);
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -45,13 +42,9 @@ function App() {
     setIsLoading(true);
     addMessage({ role: "user", content });
     try {
-      /*            Google Gemini                  */
-      // const result = await assistant.chatStream(content);
-
-      /*                OpenAI                     */
       const result = await assistant.chatStream(
         content,
-        messages.filter(({ role }) => role !== "system") // comment this line when switching to genai
+        messages.filter(({ role }) => role !== "system")
       );
 
       var isFirstChunk = false;
@@ -79,6 +72,11 @@ function App() {
       setIsStreaming(false);
     }
   }
+
+  function handleAssistantChange(newAssistant: any) {
+    assistant = newAssistant;
+  }
+
   return (
     <div className={styles.App}>
       {isLoading === true && <Loader />}
@@ -90,6 +88,8 @@ function App() {
         <Chat messages={messages} />
       </div>
       <Control isDisabled={isLoading || isStreaming} onSend={handleSend} />
+
+      <Assistant onAssistantChange={handleAssistantChange} />
     </div>
   )
 }
