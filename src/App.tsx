@@ -7,8 +7,8 @@ import { Control } from "./components/Controls/Controls";
 import { Loader } from './components/Loader/Loader';
 
 //ai
-import { Assistant } from './assistants/googleai';
-// import { Assistant } from './assistants/openai';
+// import { Assistant } from './assistants/googleai';
+import { Assistant } from './assistants/openai';
 
 
 
@@ -47,10 +47,10 @@ function App() {
     addMessage({ role: "user", content });
     try {
       /*            Google Gemini                  */
-      const result = await assistant.chatStream(content);
+      // const result = await assistant.chatStream(content);
 
       /*                OpenAI                     */
-      // const result = await assistant.chat(content, messages);
+      const result = await assistant.chatStream(content, messages);
 
       var isFirstChunk = false;
       for await (const chunk of result) {
