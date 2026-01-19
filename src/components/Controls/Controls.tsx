@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import TextaraAutosize from 'react-textarea-autosize';
-import styles from "./Controls.module.css";
+import { Box, IconButton, TextField, useTheme } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
 
 type ControlsProps = {
     isDisabled: boolean,
@@ -8,6 +8,7 @@ type ControlsProps = {
 };
 
 export function Control({ isDisabled = false, onSend }: ControlsProps) {
+    const theme = useTheme();
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const [content, setContent] = useState("");
 
@@ -28,44 +29,78 @@ export function Control({ isDisabled = false, onSend }: ControlsProps) {
         }
     }
 
-    function handleEnterPress(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    function handleEnterPress(e: React.KeyboardEvent<HTMLDivElement>) {
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             handleSend();
         }
     }
-    return (
-        <div className={styles.Controls}>
-            <div className={styles.TextAreaContainer}>
-                <TextaraAutosize
-                    ref={textareaRef}
-                    className={styles.TextArea}
-                    disabled={isDisabled}
-                    placeholder="Message AI Chatbot"
-                    value={content}
-                    minRows={1}
-                    maxRows={4}
-                    onChange={handleContentChange}
-                    onKeyDown={handleEnterPress}
-                />
-            </div>
-            <button className={styles.Button} disabled={isDisabled} onClick={handleSend}>
-                <SendIcon />
-            </button>
-        </div>
-    );
-}
 
-function SendIcon() {
     return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#5f6368"
+        <Box
+            sx={{
+                position: "sticky",
+                bottom: 0,
+                bgcolor: theme.palette.mode === "dark"
+                    ? theme.palette.background.default
+                    : "#f7f7f8",
+                py: 2,
+                borderTop: theme.palette.mode === "dark"
+                    ? "1px solid rgba(255,255,255,0.08)"
+                    : "1px solid #e5e7eb",
+            }}
         >
-            <path d="M120-160v-240l320-80-320-80v-240l760 320-760 320Z" />
-        </svg>
+            <Box
+                sx={{
+                    maxWidth: 900,
+                    mx: "auto",
+                    px: 2,
+                    display: "flex",
+                    gap: 1,
+                    bgcolor: theme.palette.mode === "dark"
+                        ? "#1f1f1f"
+                        : "white",
+                    borderRadius: 3,
+                    border: theme.palette.mode === "dark"
+                        ? "1px solid rgba(255,255,255,0.12)"
+                        : "1px solid #e5e7eb",
+                    boxShadow: theme.palette.mode === "dark"
+                        ? "0 2px 10px rgba(0,0,0,0.5)"
+                        : "0 4px 20px rgba(0,0,0,0.08)",
+                    transition: "all 0.25s ease",
+                }}
+            >
+                <TextField
+                    fullWidth
+                    multiline
+                    maxRows={4}
+                    variant="standard"
+                    placeholder="Message Pochi..."
+                    InputProps={{
+                        disableUnderline: true,
+                        sx: {
+                            px: 2,
+                            py: 1.25,
+                            color: theme.palette.mode === "dark"
+                                ? "#fff"
+                                : "#111827",
+                            "&::placeholder": {
+                                color: theme.palette.mode === "dark"
+                                    ? "rgba(255,255,255,0.5)"
+                                    : "rgba(17,24,39,0.5)",
+                            },
+                        },
+                    }}
+                    value={content}
+                    disabled={isDisabled}
+                    onChange={(e) => setContent(e.target.value)}
+                    onKeyDown={(e) => handleEnterPress(e)}
+                />
+
+                <IconButton color="primary" onClick={handleSend} disabled={isDisabled}>
+                    <SendIcon />
+                </IconButton>
+            </Box>
+        </Box>
     );
 }

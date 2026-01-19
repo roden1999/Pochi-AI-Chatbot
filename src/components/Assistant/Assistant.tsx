@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from "react";
-import styles from "./Assistant.module.css";
+import { useState, useEffect } from "react";
+import {
+    Box,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+} from "@mui/material";
 
 // Assistants APIs
 import { Assistant as GoogleAIAssistant } from "../../assistants/googleai";
@@ -14,12 +20,12 @@ const optionMap = {
 
 type OptionKey = keyof typeof optionMap;
 
-export function Assistant({ onAssistantChange }: any) {
-    const [selectedApi, setSelectedApi] = useState<OptionKey>("googleai");
+type Props = {
+    onAssistantChange: (assistant: any) => void;
+};
 
-    function handleSelectChange(event: React.ChangeEvent<HTMLSelectElement>) {
-        setSelectedApi(event.target.value as OptionKey);
-    }
+export function Assistant({ onAssistantChange }: Props) {
+    const [selectedApi, setSelectedApi] = useState<OptionKey>("googleai");
 
     useEffect(() => {
         const AssistantClass = optionMap[selectedApi];
@@ -29,15 +35,39 @@ export function Assistant({ onAssistantChange }: any) {
         }
 
         onAssistantChange(new AssistantClass());
-    }, [selectedApi]);
+    }, [selectedApi, onAssistantChange]);
+
     return (
-        <div className={styles.Assistant}>
-            <span>Select API:</span>
-            <select defaultValue={selectedApi} onChange={handleSelectChange}>
-                <option value="googleai">Google AI</option>
-                <option value="openai">OpenAI</option>
-                <option value="deepseekai">DeepSeek AI</option>
-            </select>
-        </div>
+        <Box
+            sx={{
+                bottom: 16,
+                right: 16,
+                bgcolor: "transparent",
+                p: 2,
+                borderRadius: 2,
+                minWidth: 200,
+            }}
+        >
+            <FormControl fullWidth size="small">
+                <InputLabel sx={{ color: "#b4b4b4" }}>
+                    API
+                </InputLabel>
+                <Select
+                    value={selectedApi}
+                    label="API"
+                    onChange={(e) =>
+                        setSelectedApi(e.target.value as OptionKey)
+                    }
+                    sx={{
+                        color: "black",
+                        "& fieldset": { borderColor: "#4d4d4f" },
+                    }}
+                >
+                    <MenuItem value="googleai">Google AI</MenuItem>
+                    <MenuItem value="openai">OpenAI</MenuItem>
+                    <MenuItem value="deepseekai">DeepSeek AI</MenuItem>
+                </Select>
+            </FormControl>
+        </Box>
     );
 }
