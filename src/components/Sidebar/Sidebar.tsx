@@ -4,13 +4,15 @@ import AddIcon from "@mui/icons-material/Add";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 
-const CHATS = [
-    { id: 1, title: "How to use AI Tools API" },
-    { id: 2, title: "Gemini vs ChatGPT" },
-    { id: 3, title: "Best AI models" },
-];
+type ControlsProps = {
+    chats: any[],
+    activeChatId: string,
+    activeChat: any[],
+    onActiveChatId: (message: string) => void;
+    onNewChat: (message: any) => void;
+};
 
-export function Sidebar({ chats = CHATS, activeChatId = 1 }) {
+export function Sidebar({ chats, activeChatId, activeChat, onActiveChatId, onNewChat }: ControlsProps) {
     const theme = useTheme();
     const [open, setOpen] = useState(true);
     const toggleSidebar = () => setOpen(!open);
@@ -32,6 +34,10 @@ export function Sidebar({ chats = CHATS, activeChatId = 1 }) {
     const activeBg = isDark
         ? theme.palette.action.selected
         : "rgba(0,0,0,0.22)";
+
+    function handleChatSelect(chatId: string) {
+        onActiveChatId(chatId);
+    }
 
     return (
         <Box
@@ -60,6 +66,8 @@ export function Sidebar({ chats = CHATS, activeChatId = 1 }) {
                 <Button
                     startIcon={open ? <AddIcon /> : undefined}
                     fullWidth={open}
+                    disabled={activeChat.length === 0}
+                    onClick={onNewChat}
                     sx={{
                         mb: 2,
                         color: sidebarText,
@@ -82,8 +90,8 @@ export function Sidebar({ chats = CHATS, activeChatId = 1 }) {
 
             {/* Chat list */}
             <Stack spacing={1}>
-                {open && chats.map((chat) => (
-                    <Tooltip key={chat.id} title={open ? "" : chat.title} placement="right">
+                {open && chats.filter(({ messages }) => messages.length > 0).map((chat) => (
+                    <Tooltip key={chat.id} title={open ? "" : chat.title} placement="right" onClick={e => handleChatSelect(chat.id)}>
                         <Box
                             sx={{
                                 width: open ? "100%" : 40,

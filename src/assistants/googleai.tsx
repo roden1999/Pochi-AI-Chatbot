@@ -2,11 +2,31 @@ import { GoogleGenAI } from '@google/genai';
 
 const googleai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GOOGLE_AI_API_KEY });
 
+interface ChatHistory {
+    role: "user" | "assistant" | "system";
+    content: string;
+};
+
 
 export class Assistant {
     #chat;
+    model: string;
+    name = "googleai";
     constructor(model = "gemini-3-flash-preview") {
+        this.model = model;
         this.#chat = googleai.chats.create({ model });
+    }
+
+    createChat(history: ChatHistory[]) {
+        this.#chat = googleai.chats.create({
+            model: this.model,
+            history: history
+                .filter(({ role }) => role !== "system")
+                .map(({ content, role }: any) => ({
+                    parts: [{ text: content }],
+                    role: role === "assistant" ? "model" : role,
+                })),
+        });
     }
 
     async chat(content: any) {

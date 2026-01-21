@@ -1,36 +1,44 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { Box, AppBar, Toolbar, Typography, Tooltip, IconButton, CssBaseline } from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 //components
-import { Chat } from "./components/Chat/Chat";
-import { Control } from "./components/Controls/Controls";
-import { Loader } from './components/Loader/Loader';
 import { Assistant } from './components/Assistant/Assistant';
 import { Sidebar } from "./components/Sidebar/Sidebar";
-interface ChatMessage {
-  role: "user" | "assistant" | "system";
-  content: string;
-};
+import { Chat } from "./components/Chat/Chat";
 
-const MESSAGES: ChatMessage[] = [
+const CHATS = [
   {
-    role: "assistant",
-    content: "Hello! I'm Pochi. How can  I assist you right now?"
+    id: "agfdsgfsdg", title: "How to use AI Tools API", messages: [
+      { role: "user", content: "Can you show me how to use AI Tools API?" },
+      { role: "assistant", content: "Sure! Here's a quick guide on how to use the AI Tools API..." }
+    ]
+  },
+  {
+    id: "2reawraewre", title: "Gemini vs ChatGPT", messages: [
+      { role: "user", content: "Which one is better, Gemini or ChatGPT?" },
+      { role: "assistant", content: "Both Gemini and ChatGPT have their strengths. Gemini excels in..." }
+    ]
+  },
+  {
+    id: "3reawraewrawer", title: "Best AI models", messages: [
+      { role: "user", content: "What are the best AI models available today?" },
+      { role: "assistant", content: "Some of the best AI models available today include GPT-4, Gemini, and..." }
+    ]
   },
 ];
 
-let assistant: any;
-
 function App() {
-  // const assistant = new APIAssistant();
-  const [messages, setMessages] = useState<ChatMessage[]>(MESSAGES);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isStreaming, setIsStreaming] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-
+  const [assistant, setAssistant] = useState<any>(null);
+  const [chats, setChats] = useState<any[]>(CHATS);
+  const [activeChatId, setActiveChatId] = useState('');
+  const activeChat = useMemo(
+    () => chats.find(chat => chat.id === activeChatId)?.messages || [], [chats, activeChatId]
+  );
   const theme = createTheme({
     palette: {
       mode: darkMode ? "dark" : "light",
@@ -78,55 +86,33 @@ function App() {
     localStorage.setItem("pochi-dark-mode", String(darkMode));
   }, [darkMode]);
 
-  function updateLastMessageContent(content: any) {
-    setMessages(prevMessage => prevMessage.map((message, index) =>
-      index === prevMessage.length - 1
-        ? { ...message, content: `${message.content}${content}` }
-        : message
+
+
+  const handleAssistantChange = useCallback((newAssistant: any) => {
+    setAssistant(newAssistant);
+  }, []);
+
+  function handleChatUpdate(id: string, updatedChat: any) {
+    const title = updatedChat[0]?.content.split(" ").slice(0, 7).join(" ");
+    setChats(prevChats => prevChats.map(chat =>
+      chat.id === id ? { ...chat, title: chat.title ?? title, messages: updatedChat } : chat
     ));
   }
 
-  function addMessage(message: any) {
-    setMessages(prev => [...prev, message]);
+  function handleNewChat() {
+    const id = uuidv4();
+
+
+    setChats(prevChats => [
+      ...prevChats,
+      { id, messages: [] }
+    ]);
+    setActiveChatId(id);
   }
 
-  async function handleSend(content: any) {
-    setIsLoading(true);
-    addMessage({ role: "user", content });
-    try {
-      const result = await assistant.chatStream(
-        content,
-        messages.filter(({ role }) => role !== "system")
-      );
-
-      var isFirstChunk = false;
-      for await (const chunk of result) {
-        if (!isFirstChunk) {
-          isFirstChunk = true;
-          addMessage({ role: "assistant", content: "" });
-          setIsLoading(false);
-          setIsStreaming(true);
-        }
-
-        updateLastMessageContent(chunk);
-      }
-      setIsStreaming(false);
-    } catch (error: unknown) {
-      addMessage({
-        role: "system",
-        content:
-          error instanceof Error
-            ? error.message
-            : "Sorry, I couldn't process your request. Please try again!",
-      });
-    } finally {
-      setIsLoading(false);
-      setIsStreaming(false);
-    }
-  }
-
-  function handleAssistantChange(newAssistant: any) {
-    assistant = newAssistant;
+  function handleActiveChatId(chatId: string) {
+    setActiveChatId(chatId);
+    setChats(prevChats => prevChats.filter(({ messages }) => messages.length > 0));
   }
 
   return (
@@ -134,7 +120,13 @@ function App() {
       <CssBaseline />
       <Box sx={{ display: "flex", height: "100vh", bgcolor: "background.default" }}>
 
-        <Sidebar />
+        <Sidebar
+          chats={chats}
+          activeChatId={activeChatId}
+          activeChat={activeChat}
+          onActiveChatId={handleActiveChatId}
+          onNewChat={handleNewChat}
+        />
 
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <AppBar
@@ -182,12 +174,19 @@ function App() {
             </Toolbar>
           </AppBar>
 
-          <Chat messages={messages} isLoading={isLoading} />
+          {chats
+            .map((chat) => (
+              <Chat
+                key={chat.id}
+                assistant={assistant}
+                isActive={chat.id === activeChatId}
+                chatId={chat.id}
+                chatMessages={chat.messages}
+                onChatUpdate={handleChatUpdate}
+              />
+            ))
+          }
 
-          <Control
-            isDisabled={isLoading || isStreaming}
-            onSend={handleSend}
-          />
         </Box>
       </Box>
     </ThemeProvider>
