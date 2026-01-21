@@ -17,15 +17,8 @@ interface ChatMessage {
     content: string;
 };
 
-const MESSAGES: ChatMessage[] = [
-    {
-        role: "assistant",
-        content: "Hello! I'm Pochi. How can  I assist you right now?"
-    },
-];
-
 export function Chat({ assistant, isActive, chatId, chatMessages, onChatUpdate }: ControlsProps) {
-    const [messages, setMessages] = useState<ChatMessage[]>(MESSAGES);
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isStreaming, setIsStreaming] = useState(false);
 
