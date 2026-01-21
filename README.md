@@ -1,73 +1,21 @@
-# React + TypeScript + Vite
+🐶 Pochi AI Chatbot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Pochi AI Chatbot is a modern, ChatGPT-style AI chatbot built with React, TypeScript, and Vite, featuring real-time streaming responses, multi-provider AI support, and a clean, responsive user interface. Designed for flexibility and performance, Pochi allows users to seamlessly switch between different AI providers while enjoying a smooth chat experience with dark mode support.
 
-Currently, two official plugins are available:
+The project focuses on a polished UI/UX inspired by ChatGPT, modular architecture, and easy extensibility—making it ideal for learning, experimentation, or as a foundation for production-ready AI chat applications.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+✨ Key Features
 
-## React Compiler
+•  💬 ChatGPT-style real-time streaming responses
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+•  🔁 Multi-AI provider support (OpenAI, Google AI, DeepSeek)
 
-## Expanding the ESLint configuration
+•  🌙 Dark mode & light mode
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+•  🎨 Modern UI built with Material UI (MUI)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+•  ⚡ Fast development with Vite
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+•  🧩 Modular, scalable React + TypeScript architecture
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🔗 Live Demo: https://pochi-ai-chatbot.onrender.com/
