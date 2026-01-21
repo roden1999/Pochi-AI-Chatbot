@@ -10,35 +10,15 @@ import { Assistant } from './components/Assistant/Assistant';
 import { Sidebar } from "./components/Sidebar/Sidebar";
 import { Chat } from "./components/Chat/Chat";
 
-const CHATS = [
-  {
-    id: "agfdsgfsdg", title: "How to use AI Tools API", messages: [
-      { role: "user", content: "Can you show me how to use AI Tools API?" },
-      { role: "assistant", content: "Sure! Here's a quick guide on how to use the AI Tools API..." }
-    ]
-  },
-  {
-    id: "2reawraewre", title: "Gemini vs ChatGPT", messages: [
-      { role: "user", content: "Which one is better, Gemini or ChatGPT?" },
-      { role: "assistant", content: "Both Gemini and ChatGPT have their strengths. Gemini excels in..." }
-    ]
-  },
-  {
-    id: "3reawraewrawer", title: "Best AI models", messages: [
-      { role: "user", content: "What are the best AI models available today?" },
-      { role: "assistant", content: "Some of the best AI models available today include GPT-4, Gemini, and..." }
-    ]
-  },
-];
-
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [assistant, setAssistant] = useState<any>(null);
-  const [chats, setChats] = useState<any[]>(CHATS);
-  const [activeChatId, setActiveChatId] = useState('');
+  const [chats, setChats] = useState<any[]>([]);
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const activeChat = useMemo(
     () => chats.find(chat => chat.id === activeChatId)?.messages || [], [chats, activeChatId]
   );
+
   const theme = createTheme({
     palette: {
       mode: darkMode ? "dark" : "light",
@@ -87,6 +67,9 @@ function App() {
   }, [darkMode]);
 
 
+useEffect(() => {
+    handleNewChat();
+  }, []);
 
   const handleAssistantChange = useCallback((newAssistant: any) => {
     setAssistant(newAssistant);
