@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Typography, Stack, IconButton, Tooltip, useTheme, Avatar } from "@mui/material";
+import { Box, Button, Typography, Stack, IconButton, Tooltip, useTheme } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
@@ -91,7 +91,7 @@ export function Sidebar({ chats, activeChatId, activeChat, onActiveChatId, onNew
             {/* Chat list */}
             <Stack spacing={1}>
                 {open && chats.filter(({ messages }) => messages.length > 0).map((chat) => (
-                    <Tooltip key={chat.id} title={open ? "" : chat.title} placement="right" onClick={e => handleChatSelect(chat.id)}>
+                    <Tooltip key={chat.id} title={open ? "" : chat.title} placement="right" onClick={() => handleChatSelect(chat.id)}>
                         <Box
                             sx={{
                                 width: open ? "100%" : 40,

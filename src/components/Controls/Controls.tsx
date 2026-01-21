@@ -18,10 +18,6 @@ export function Control({ isDisabled = false, onSend }: ControlsProps) {
         }
     }, [isDisabled])
 
-    function handleContentChange(e: any) {
-        setContent(e.target.value)
-    }
-
     function handleSend() {
         if (content.length > 0) {
             onSend(content);
