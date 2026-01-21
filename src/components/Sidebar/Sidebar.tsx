@@ -6,7 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 type ControlsProps = {
     chats: any[],
-    activeChatId: string,
+    activeChatId: string | null,
     activeChat: any[],
     onActiveChatId: (message: string) => void;
     onNewChat: (message: any) => void;
