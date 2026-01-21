@@ -16,6 +16,13 @@ type ChatProps = {
     isLoading?: boolean;
 };
 
+const WELCOME_MESSAGE = [
+  {
+    role: "assistant",
+    content: "Woof! I’m Pochi 🐾 your Pomeranian AI assistant. How can I help you today?",
+  },
+];
+
 export function Messages({ messages, isLoading }: ChatProps) {
     const theme = useTheme();
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -44,7 +51,7 @@ export function Messages({ messages, isLoading }: ChatProps) {
                 bgcolor: theme.palette.background.default,
             }}
         >
-            {messagesGroups.map((messages, groupIndex) => (
+            {[WELCOME_MESSAGE, ...messagesGroups].map((messages, groupIndex) => (
                 <Box key={groupIndex} sx={{ py: 2 }}>
                     {messages.map(({ role, content }, index) => (
                         <Box
